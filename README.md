@@ -9,12 +9,19 @@
 
 -----
 
-### Task 1 : Register on services and get your IDs
+### Webcasts
+
+There are 3 webcasts that describe this lab:
+
+* [One](https://www.youtube.com/watch?v=uqIva5-mKMs&index=1&list=PLfKkysTy70Qb_mfkkqa5OUMqsOPNEYZIa) that explains the difference between fork and clone on GitHub
+* [One](https://www.youtube.com/watch?v=8LFbasLgM-M&index=2&list=PLfKkysTy70Qb_mfkkqa5OUMqsOPNEYZIa) that shows how to use maven from the command line to build and test the project.
+* [One](https://www.youtube.com/watch?v=P3aMCCuAFv0&index=3&list=PLfKkysTy70Qb_mfkkqa5OUMqsOPNEYZIa) that shows how to build and test from NetBeans
+
+-----
+
+### Task 1 : Register on GitHub
 
 1. If you don't have a **GitHub** account yet, get one [here](https://github.com/).
-2. If you have not registered on **CyberLearn (moodle)**, register [here](http://cyberlearn.hes-so.ch/course/view.php?id=6971) (the password is *heigvdrocks*).
-3. If you don't have a **StackOverflow** account yet, get one [here](https://www.stackoverflow.com).
-
 
 -----
 
