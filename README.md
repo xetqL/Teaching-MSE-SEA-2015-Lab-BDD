@@ -1,23 +1,41 @@
 ### Introduction
 
+#### Part 1: The commit stage: build and run unit tests with maven
 * **Task 1** : Register on services and get your IDs (10')
 * **Task 2** : Setup the environment (30')
 * **Task 3** : Fork this GitHub repo (10')
 * **Task 4** : Understand the project structure (10')
-* **Task 5** : Develop the Java code according to the executable specification (60')
-* **Task 6** : Submit your results (15')
+* **Task 5** : Develop the Java code according to the executable specification (20')
+* **Task 6** : Submit your results (10')
+
+#### Part 2: Control the pipeline: trigger and monitor the build process with jenkins
+* **Task 1** : Download and install jenkins (20')
+* **Task 2** : Configure jenkins to get source code from GitHub and invoke maven (30')
+
+#### Part 3: The automated user acceptance stage: BDD with Cucumber
+
 
 -----
 
 ### Webcasts
 
-There are 3 webcasts that describe this lab:
+There are 3 webcasts that describe the **part 1** of this lab:
 
 * [One](https://www.youtube.com/watch?v=uqIva5-mKMs&index=1&list=PLfKkysTy70Qb_mfkkqa5OUMqsOPNEYZIa) that explains the difference between fork and clone on GitHub
 * [One](https://www.youtube.com/watch?v=8LFbasLgM-M&index=2&list=PLfKkysTy70Qb_mfkkqa5OUMqsOPNEYZIa) that shows how to use maven from the command line to build and test the project.
 * [One](https://www.youtube.com/watch?v=P3aMCCuAFv0&index=3&list=PLfKkysTy70Qb_mfkkqa5OUMqsOPNEYZIa) that shows how to build and test from NetBeans
 
+There are 5 webcasts that describe the **part 2** of this lab:
+
+* [One](https://www.youtube.com/watch?v=Q-1bvb9IfY0) that shows how to run Jenkins from the command line
+* [One](https://www.youtube.com/watch?v=OKFj7Y0TB64) that shows how to install the Git plugin in Jenkins
+* [One](https://www.youtube.com/watch?v=reHC3WoRRGg) that shows how to let jenkins know where you have installed maven on your system
+* [One](https://www.youtube.com/watch?v=__djo4nlYbE) that shows how to configure maven and trigger a build manually (and see a failing unit test)
+* [One](https://www.youtube.com/watch?v=btwxR2UnGro) that shows how to fix the failing test, push the fix to GitHub and trigger a successful build
+
 -----
+
+## Part 1: The commit stage: build and run unit tests with maven
 
 ### Task 1 : Register on GitHub
 
@@ -371,6 +389,76 @@ Last but not least, we ask you to make a **pull request**. In a typical open sou
 In our workflow, we will most likely **not** accept your pull requests. However, having a pull request is a nice way to **notify us** that you are done with the implementation. It also give us a mechanism to give you **line-by-line feedback**.
 
 ----
+
+-----
+
+## Part 2: Control the pipeline: trigger and monitor the build process with jenkins
+
+-----
+
+### Task 1 : Download and install jenkins (20')
+
+#### 1.1: Download jenkins
+
+* Go to [http://http://jenkins-ci.org/](http://jenkins-ci.org/) and click on the download "Latest and greatest" link to download the .war file. [Here is the direct link](http://mirrors.jenkins-ci.org/war/latest/jenkins.war).
+
+#### 1.2: Install and run jenkins
+
+* Jenkins is a Java web application. You could deploy it in an application server (Tomcat, Glassfish, JBoss). As an alternative, Jenkins offers and embedded server, so you can run it directly with the following command:
+
+```
+java -jar jenkins.war
+```
+
+* If you look at the log produced by the command, you will see two interesting lines, which tell you where jenkins stores its configuration files and on which port it listens.
+
+```
+Jenkins home directory: /Users/admin/.jenkins found at: $user.home/.jenkins
+mars 09, 2015 9:16:08 AM org.eclipse.jetty.util.log.JavaUtilLog info
+INFO: Started SelectChannelConnector@0.0.0.0:8080
+mars 09, 2015 9:16:08 AM winstone.Logger logInternal
+```
+
+* You should now be able to open a web browser and to log into jenkins by accessing the following url: [http://localhost:8080](http://localhost:8080).
+
+
+-----
+
+### Task 2 : Configure jenkins to get source code from GitHub and invoke maven (30')
+
+* Now that jenkins is installed, we can create a build pipeline. This is done by creating one or more **jobs**. Click on the **New item** or **Create new job** links.
+
+* When you are asked for a **job name**, you can specify **Build lab project (commit stage)**. You also have to select one project type: select **Maven project**.
+
+* In the **Source Code Management**, you see that CVS and subversion are supported by default, but you cannot see git. You need to install a jenkins plugin for that. Click on the Jenkins icon (top-left) and click on **Manage jenkins**. Click on **Manage Plugins**, then on the **Available** tab. In the **filter** search box, type **git** and hit return. As you can see, there are many git and GitHub related plugins. Scroll to the bottom and select the one named **Git Plugin** (*This plugin allows use of Git as a build SCM*).
+
+* When you start the installation process, you will notice that Jenkins automatically downloads the required dependencies (Credentials Plugin, Git Client Plugin, SCM API Plugin and finally Git Plugin). Make sure to **restart jenkins** where you are done. **Note that if the installation appears to be frozen, you may have to reload the page in the browser**.
+
+* When you have installed the plugin, you can go back to your job. You do that by clicking on it in the main page and then selecting **Configure** in the left menu. As you can see, you have have the possibility to select **Git** in the Source Code Management section. Enter the **URL** of your GitHub fork, Add **Credentials** (and make sure to **select them** in the popup menu). You can use the default values for the rest of this section.
+
+* In the **Build Triggers** section, unselect all options. We will trigger the builds manually for now.
+
+* You may have to **configure maven**, which means that you have to tell jenkins where you have installed maven on your machine. Simply provide the **path** you have chosen on your local machine.
+
+* In the **Build** section, you need to indicate where the **main pom.xml** file is located, relative to the root of your repo. Type in the following path: **./Lab00App-build/pom.xml**. In **Goals and options**, type **clean install**.
+
+* You are all set! You can now try to build your project by clicking on the **green arrow** on the right side of your job (in the main jenkins page), or by clicking on the **Build now** element in the left menu (on the job configuration page). When you do that, you will see that the process is asynchronous: the build is put in a queue and waits for some workers to be available (this makes sense in real projects, especially with multiple developers).
+
+* The color of the dot indicates whether the build was successful or not. If you click on the **Console Output**, you will have access to all the details (output of the maven build).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### FAQ
 
